@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Koulen, Funnel_Sans } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/Header"
+
 
 const koulen = Koulen({
   variable: "--font-koulen",
-  weight: "400", 
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -28,7 +30,10 @@ export default function RootLayout({
       lang="en"
       className={`${koulen.variable} ${funnelSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full h-screen w-screen flex flex-col justify-between items-center gap-2 p-2">
+        <Header />
+        <div className="h-full w-full border-3 border-accent">{children}</div>
+      </body>
     </html>
   );
 }

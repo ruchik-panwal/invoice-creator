@@ -12,10 +12,12 @@
   --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-koulen: var(--font-koulen), sans-serif;
+  --font-funnel: var(--font-funnel-sans), sans-serif;
 }
 
 body {
   background: var(--background);
-  font-family: aArial, Helvetica, sans-serif;
+  font-family:  aArial, Helvetica, sans-serif;
 }
 
