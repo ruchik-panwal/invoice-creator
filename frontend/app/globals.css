@@ -18,3 +18,7 @@ body {
   background: var(--background);
   font-family: var(--font-funnel-sans), aArial, Helvetica, sans-serif;
 }
+
+button{
+  cursor: pointer;
+}
