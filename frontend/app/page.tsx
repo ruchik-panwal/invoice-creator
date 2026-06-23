@@ -3,8 +3,8 @@ import ProfileTab from "@/components/homePaege/ProfileTab";
 
 export default function Home() {
   return (
-    <div className="bg-amber-200 h-full w-full flex">
-      <div className="flex flex-col w-[15vw] h-full border-r-3 border-accent ">
+    <div className="h-full w-full flex">
+      <div className="flex flex-col max-w-[15vw] h-full border-r-3 border-accent ">
         <SearchTab />
         <ProfileTab />
       </div>
