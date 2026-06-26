@@ -32,7 +32,7 @@ export default function RootLayout({
     >
       <body className="min-h-full h-screen w-screen flex flex-col justify-between items-center gap-2 p-2">
         <Header />
-        <div className="h-full w-full border-3 border-accent">{children}</div>
+        <div className="h-full w-full border-3 border-accent overflow-hidden">{children}</div>
       </body>
     </html>
   );
