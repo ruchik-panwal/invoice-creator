@@ -1,8 +1,8 @@
-import SearchTab from "@/components/homePaege/search/SearchTab";
-import ProfileTab from "@/components/homePaege/ProfileTab";
-import SortFilter from "@/components/homePaege/SortFilter";
-import InvoiceList from "@/components/homePaege/InvoiceList";
-import CreateInvBtn from "@/components/homePaege/CreateInvBtn";
+import SearchTab from "@/components/homePage/search/SearchTab";
+import ProfileTab from "@/components/homePage/ProfileTab";
+import SortFilter from "@/components/homePage/SortFilter";
+import InvoiceList from "@/components/homePage/InvoiceList";
+import CreateInvBtn from "@/components/homePage/CreateInvBtn";
 
 export default function Home() {
   return (
