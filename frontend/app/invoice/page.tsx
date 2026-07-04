@@ -1,5 +1,6 @@
 import ListForms from "@/components/InvPage/ListForms";
 import InfoForms from "@/components/InvPage/InfoForms"
+import PreviewWindow from "@/components/InvPage/LivePreview/PreviewWindow"
 
 export default function NewInvoice() {
   return (
@@ -10,7 +11,7 @@ export default function NewInvoice() {
       </div>
 
       <div className="flex justify-center items-center h-full p-10">
-        <div className="bg-cyan-500 aspect-[1/1.414] h-full"></div>
+       <PreviewWindow />
       </div>
     </div>
   );
