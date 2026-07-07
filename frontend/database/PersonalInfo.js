@@ -1,4 +1,4 @@
-export const owner = {
+const owner = {
   id: "Owner1",
   name: "Ruchik",
   phone: "+91 77109 93301",
@@ -6,3 +6,5 @@ export const owner = {
   address: "308 Negra Arroyo Lane, Albuquerque, New Mexico 87104",
   pincode: "50",
 };
+
+export default owner;

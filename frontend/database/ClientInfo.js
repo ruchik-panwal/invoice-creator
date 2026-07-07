@@ -1,4 +1,4 @@
-export const clients = [
+const clients = [
   {
     id: "CUST-901",
     name: "Acme Innovations Ltd",
@@ -32,3 +32,5 @@ export const clients = [
     pincode: "400021",
   },
 ];
+
+export default clients;

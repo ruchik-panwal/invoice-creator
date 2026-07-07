@@ -1,4 +1,4 @@
-export const invoices = [
+const invoices = [
   {
     id: "INV1",
     status: true,
@@ -7,7 +7,12 @@ export const invoices = [
     customerId: "CUST-901",
     GSTpercent: 10,
     discountPercent: 0,
-    paidAmount: 2500,
+    subTotal: 2500.00,
+    discountAmount: 0,
+    taxAmount: 250,
+    totalAmount: 2750.00,
+    paidAmount: 2500.00,
+    balanceDue: 250.00,
     items: [
       {
         description: "Frontend Development",
@@ -25,7 +30,12 @@ export const invoices = [
     customerId: "CUST-902",
     GSTpercent: 18,
     discountPercent: 5,
+    subTotal: 3800,
+    discountAmount: 190,
+    taxAmount: 649.80,
+    totalAmount: 4259.80,
     paidAmount: 1000,
+    balanceDue: 3259.80,
     items: [
       {
         description: "UI/UX Design Wireframes",
@@ -49,7 +59,12 @@ export const invoices = [
     customerId: "CUST-903",
     GSTpercent: 5,
     discountPercent: 10,
+    subTotal: 2000,
+    discountAmount: 200,
+    taxAmount: 90,
+    totalAmount: 1890,
     paidAmount: 0,
+    balanceDue: 1890,
     items: [
       {
         description: "SEO Consulting",
@@ -67,7 +82,12 @@ export const invoices = [
     customerId: "CUST-901",
     GSTpercent: 12,
     discountPercent: 0,
+    subTotal: 1500,
+    discountAmount: 0,
+    taxAmount: 180,
+    totalAmount: 1680,
     paidAmount: 1500,
+    balanceDue: 180,
     items: [
       {
         description: "Server Maintenance",
@@ -85,7 +105,12 @@ export const invoices = [
     customerId: "CUST-904",
     GSTpercent: 18,
     discountPercent: 15,
+    subTotal: 15000,
+    discountAmount: 2250,
+    taxAmount: 2295,
+    totalAmount: 15045,
     paidAmount: 5000,
+    balanceDue: 10045,
     items: [
       {
         description: "Mobile App Development",
@@ -102,3 +127,5 @@ export const invoices = [
     ],
   },
 ];
+
+export default invoices;
