@@ -2,19 +2,33 @@
 import { RiDeleteBin6Line, RiDownloadLine } from "react-icons/ri";
 import InvoiceHeadings from "@/components/homePage/InvoiceHeadings";
 import invoices from "@/database/Invoices";
+import sortInvoice from "@/components/homePage/InvoiceSorter";
 import clients from "@/database/ClientInfo";
+import { useEffect, useState } from "react";
 
 export default function InvoiceList({ selected }) {
+  const [sortObj, setSortObj] = useState({ type: "invNum", status: true });
+  let sortedInv = sortInvoice(invoices, sortObj);
+
+  function setSortType(term) {
+    const newType = { ...term };
+    setSortObj(newType);
+  }
+
+  useEffect(() => {
+    sortedInv = sortInvoice(invoices, sortObj);
+  }, [sortObj]);
+
   return (
     <div className="h-full w-full flex flex-col items-center">
-      <InvoiceHeadings />
+      <InvoiceHeadings setSortType={setSortType} sortObj={sortObj}/>
       <div className="w-full h-[4vh] border-b border-accent"></div>
-      {invoices.map((inv, ind) => {
+      {sortedInv.map((inv, ind) => {
         return inv.customerId == selected && <Invoice key={ind} inv={inv} />;
       })}
 
       {selected == "All" &&
-        invoices.map((inv, ind) => {
+        sortedInv.map((inv, ind) => {
           return <Invoice key={ind} inv={inv} />;
         })}
     </div>

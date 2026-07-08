@@ -1,7 +1,6 @@
 "use client";
 import SearchTab from "@/components/homePage/search/SearchTab";
 import ProfileTab from "@/components/homePage/ProfileTab";
-import SortFilter from "@/components/homePage/SortFilter";
 import InvoiceList from "@/components/homePage/InvoiceList";
 import CreateInvBtn from "@/components/homePage/CreateInvBtn";
 import { useState } from "react";
