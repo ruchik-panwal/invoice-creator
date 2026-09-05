@@ -20,6 +20,18 @@ const invoices = [
         rate: 500,
         amount: 2500,
       },
+      {
+        description: "Frontend Development",
+        hours: 5,
+        rate: 500,
+        amount: 2500,
+      },
+      {
+        description: "Logo Design",
+        hours: 2,
+        rate: 400,
+        amount: 800,
+      }
     ],
   },
   {
