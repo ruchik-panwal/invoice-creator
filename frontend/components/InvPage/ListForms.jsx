@@ -25,12 +25,10 @@ export default function ListForms({ invoiceData, setInvoiceData }) {
       const newItems = [...prev.items];
       newItems[index] = { ...newItems[index], [field]: value };
 
-      // If user updates hours or rate, auto-calculate the amount
+      // Auto-calculate item amount only
       if (field === "hours" || field === "rate") {
         const hours = parseFloat(newItems[index].hours) || 0;
         const rate = parseFloat(newItems[index].rate) || 0;
-        
-        // Only override the amount if they are actually using hours/rate
         if (hours > 0 || rate > 0) {
           newItems[index].amount = hours * rate;
         }
@@ -69,12 +67,11 @@ export default function ListForms({ invoiceData, setInvoiceData }) {
 }
 
 function ListForm({ ind, item, onDelete, onChange }) {
-  // Removed the readOnly: true from the Amount field so you can type directly into it
   const labelArr = [
     { label: "Description", name: "description", type: "text" },
     { label: "Hours", name: "hours", type: "number" },
     { label: "Rate", name: "rate", type: "number" },
-    { label: "Amount", name: "amount", type: "number" }, 
+    { label: "Amount", name: "amount", type: "number" },
   ];
 
   return (

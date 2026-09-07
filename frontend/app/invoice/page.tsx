@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ListForms from "@/components/InvPage/ListForms";
 import InfoForms from "@/components/InvPage/InfoForms";
 import PreviewWindow from "@/components/InvPage/LivePreview/PreviewWindow";
@@ -29,19 +29,56 @@ const skeletonInvData = {
 };
 
 export default function NewInvoice() {
-  // Global state for the entire invoice page
   const [invoiceData, setInvoiceData] = useState(skeletonInvData);
+
+  // Centralized calculation: Runs automatically when items or percentages change
+  useEffect(() => {
+    const subTotal = invoiceData.items.reduce(
+      (sum, item) => sum + (item.amount || 0),
+      0
+    );
+
+    const discountPercent = invoiceData.discountPercent || 0;
+    const GSTpercent = invoiceData.GSTpercent || 0;
+    const paidAmount = invoiceData.paidAmount || 0;
+
+    const discountAmount = subTotal * (discountPercent / 100);
+    const taxAmount = (subTotal - discountAmount) * (GSTpercent / 100);
+    const totalAmount = subTotal - discountAmount ;
+    const balanceDue = totalAmount - paidAmount;
+
+    // Only update state if values actually changed to prevent infinite loops
+    if (
+      invoiceData.subTotal !== subTotal ||
+      invoiceData.discountAmount !== discountAmount ||
+      invoiceData.taxAmount !== taxAmount ||
+      invoiceData.totalAmount !== totalAmount ||
+      invoiceData.balanceDue !== balanceDue
+    ) {
+      setInvoiceData((prev) => ({
+        ...prev,
+        subTotal,
+        discountAmount,
+        taxAmount,
+        totalAmount,
+        balanceDue,
+      }));
+    }
+  }, [
+    invoiceData.items,
+    invoiceData.discountPercent,
+    invoiceData.GSTpercent,
+    invoiceData.paidAmount,
+  ]);
 
   return (
     <div className="uppercase h-full w-full flex text-background">
       <div className="h-full w-full flex items-center border-r-3 border-accent ">
-        {/* Pass the state down as props */}
         <InfoForms invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
         <ListForms invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
       </div>
 
       <div className="flex justify-center items-center h-full p-10">
-        {/* You will likely want to pass invoiceData to the preview window too */}
         <PreviewWindow invoiceData={invoiceData} />
       </div>
     </div>

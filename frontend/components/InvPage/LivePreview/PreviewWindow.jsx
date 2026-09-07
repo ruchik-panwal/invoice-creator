@@ -6,7 +6,7 @@ export default function PreviewWindow({ invoiceData }) {
   // 2. If not found, build a new client object from the manually typed invoiceData.
   // 3. If those are empty too, use placeholder text so the preview looks good.
   const dbClient = clients.find((c) => c.id === invoiceData.customerId);
-  
+
   const client = dbClient || {
     name: invoiceData.toName || "Client Name",
     phone: invoiceData.toPhone || "Phone Number",
@@ -116,11 +116,12 @@ function ItemizedTable({ invoiceData }) {
                 className="flex px-1 py-0.5 border-b border-accent text-[0.65rem] text-foreground/70"
               >
                 <p className="w-10">{String(ind + 1).padStart(2, "0")}</p>
-                <p className="flex-1">{item.description || "Item Description"}</p>
+                <p className="flex-1">
+                  {item.description || "Item Description"}
+                </p>
                 <p className="w-16 text-center">{item.hours || 0}</p>
                 <p className="w-16 text-center">{item.rate || 0}</p>
                 <p className="w-20 text-right">
-                  {/* FIX: Wrapped in Number() */}
                   {"₹ " + Number(item.amount || 0).toFixed(2)}
                 </p>
               </div>
@@ -134,7 +135,6 @@ function ItemizedTable({ invoiceData }) {
           <div className="flex flex-col w-50">
             <div className="flex justify-between">
               <p>SUB TOTAL</p>
-              {/* FIX: Wrapped in Number() */}
               <p>{"₹ " + Number(invoiceData.subTotal || 0).toFixed(2)}</p>
             </div>
             <div className="flex justify-between">
@@ -143,7 +143,6 @@ function ItemizedTable({ invoiceData }) {
             </div>
             <div className="flex justify-between">
               <p>PAID</p>
-              {/* FIX: Wrapped in Number() */}
               <p>{"₹ " + Number(invoiceData.paidAmount || 0).toFixed(2)}</p>
             </div>
           </div>
@@ -152,8 +151,8 @@ function ItemizedTable({ invoiceData }) {
         <div className="w-full border-t border-accent px-1 flex justify-end">
           <div className="flex justify-between w-50">
             <p>GRAND TOTAL</p>
-            {/* FIX: Wrapped in Number() */}
-            <p>{"₹ " + Number(invoiceData.totalAmount || 0).toFixed(2)}</p>
+            {/* CHANGED HERE: Now using balanceDue instead of totalAmount */}
+            <p>{"₹ " + Number(invoiceData.balanceDue || 0).toFixed(2)}</p>
           </div>
         </div>
       </div>

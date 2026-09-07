@@ -1,8 +1,10 @@
 import { IoIosArrowDropdown } from "react-icons/io";
-import clients from "@/database/ClientInfo"; // Import your clients file here (adjust path if needed)
+import clients from "@/database/ClientInfo"; 
 import owner from "@/database/PersonalInfo";
 
 export default function Form({ title, invoiceData, setInvoiceData }) {
+  
+  // Reverted to a simple updater - the parent's useEffect handles all math now
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInvoiceData((prevData) => ({
@@ -44,7 +46,6 @@ function AddrForm({ prefix, invoiceData, handleChange, setInvoiceData }) {
     { label: "PinCode", name: `${prefix}PinCode` },
   ];
 
-  // Auto-fill the "to" fields when a client is selected
   const handleClientSelect = (e) => {
     const selectedId = e.target.value;
     const client = clients.find((c) => c.id === selectedId);
@@ -62,7 +63,6 @@ function AddrForm({ prefix, invoiceData, handleChange, setInvoiceData }) {
     }
   };
 
-  // Auto-fill the "from" fields with the owner data
   const handleOwnerFill = () => {
     setInvoiceData((prev) => ({
       ...prev,
@@ -76,8 +76,6 @@ function AddrForm({ prefix, invoiceData, handleChange, setInvoiceData }) {
 
   return (
     <div className="flex flex-col items-center gap-1 h-full w-full text-foreground p-2">
-      
-      {/* Auto-fill button for the "from" section */}
       {prefix === "from" && (
         <div className="flex justify-end w-full mb-1">
           <button
@@ -90,7 +88,6 @@ function AddrForm({ prefix, invoiceData, handleChange, setInvoiceData }) {
         </div>
       )}
 
-      {/* Client Dropdown - Only renders in the "to" section */}
       {prefix === "to" && (
         <div className="flex gap-2 w-full text-[1rem] mb-2">
           <h1 className="w-30">Select Client:</h1>
@@ -125,7 +122,6 @@ function AddrForm({ prefix, invoiceData, handleChange, setInvoiceData }) {
 }
 
 function MiscForm({ invoiceData, handleChange }) {
-  // Map your labels to the actual skeleton keys
   const labelArr = [
     { label: "GST", name: "GSTpercent" },
     { label: "Discount", name: "discountPercent" },
@@ -160,7 +156,7 @@ function TxtInputComp({ title, name, value, handleChange }) {
           value={value}
           onChange={handleChange}
           className="w-full font-funnel-sans text-foreground text-[0.8rem] tracking-[-4%] appearance-none bg-transparent outline-none focus:ring-0 px-2 m-0 rounded-none border border-accent"
-          type="text"
+          type="number" // Set to number to prevent text input breaking calculations
         />
       ) : (
         <textarea
