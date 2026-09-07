@@ -1,25 +1,43 @@
-import invoices from "@/database/Invoices";
 import clients from "@/database/ClientInfo";
 import owner from "@/database/PersonalInfo";
 
-export default function PreviewWindow() {
-  const invoice = invoices[0];
-  const client = clients.find((client) => client.id === invoice.customerId);
+export default function PreviewWindow({ invoiceData }) {
+  // 1. Try to find the client in the DB.
+  // 2. If not found, build a new client object from the manually typed invoiceData.
+  // 3. If those are empty too, use placeholder text so the preview looks good.
+  const dbClient = clients.find((c) => c.id === invoiceData.customerId);
+  
+  const client = dbClient || {
+    name: invoiceData.toName || "Client Name",
+    phone: invoiceData.toPhone || "Phone Number",
+    email: invoiceData.toEmail || "client@email.com",
+    address: invoiceData.toAddress || "Client Address",
+    pincode: invoiceData.toPinCode || "Pincode",
+  };
+
+  // We can do the same for the owner in case you manually edit the "From" fields!
+  const sender = {
+    name: invoiceData.fromName || owner.name || "Your Name",
+    phone: invoiceData.fromPhone || owner.phone || "Your Phone",
+    email: invoiceData.fromEmail || owner.email || "Your Email",
+    address: invoiceData.fromAddress || owner.address || "Your Address",
+    pincode: invoiceData.fromPinCode || owner.pincode || "Pincode",
+  };
 
   return (
-    <div className="relative overflow-hidden bg-[#FFF9E0] text-foreground tracking-[-5%] border border-accent aspect-[1/1.414] p-6 h-190 flex flex-col">
+    <div className="relative overflow-hidden bg-[#FFF9E0] text-foreground tracking-[-5%] border border-accent aspect-[1/1.414] p-6 h-190 flex flex-col select-none">
       <div className="relative z-10 flex-1 flex flex-col gap-3">
-        <InvHeader invoice={invoice} />
-        <CounterpartyInfo invoice={invoice} owner={owner} client={client} />
-        <ItemizedTable invoice={invoice} />
+        <InvHeader invoiceData={invoiceData} />
+        <CounterpartyInfo owner={sender} client={client} />
+        <ItemizedTable invoiceData={invoiceData} />
         {/* <PaymentInfo /> */}
-        <InvFooter email={owner.email} />
+        <InvFooter email={sender.email} />
       </div>
     </div>
   );
 }
 
-function InvHeader({ invoice }) {
+function InvHeader({ invoiceData }) {
   return (
     <div className="flex justify-between ">
       <div className="font-koulen text-[5rem] leading-15">INVOICE</div>
@@ -27,19 +45,19 @@ function InvHeader({ invoice }) {
         <div className="flex justify-between items-center -m-px">
           <p>Invoice Number:</p>
           <p className="text-[#C03D37] font-funnel tracking-[3%] ">
-            {invoice.id}
+            {invoiceData.id || "INV-XXXX"}
           </p>
         </div>
         <div className="flex justify-between items-center -m-px">
           <p>Issue Date:</p>
           <p className="text-[#C03D37] font-funnel tracking-[3%]">
-            {invoice.dateCreated}
+            {invoiceData.dateCreated || "DD/MM/YYYY"}
           </p>
         </div>
         <div className="flex justify-between items-center -m-px">
           <p>Due Date:</p>
           <p className="text-[#C03D37] font-funnel  tracking-[3%]">
-            {invoice.dateDue}
+            {invoiceData.dateDue || "DD/MM/YYYY"}
           </p>
         </div>
       </div>
@@ -74,9 +92,8 @@ function CounterpartyInfo({ owner, client }) {
   );
 }
 
-function ItemizedTable({ invoice }) {
-  const items = invoice.items;
-  console.log(items);
+function ItemizedTable({ invoiceData }) {
+  const items = invoiceData.items || [];
 
   return (
     <div className="border border-accent h-full flex flex-col justify-between">
@@ -99,11 +116,12 @@ function ItemizedTable({ invoice }) {
                 className="flex px-1 py-0.5 border-b border-accent text-[0.65rem] text-foreground/70"
               >
                 <p className="w-10">{String(ind + 1).padStart(2, "0")}</p>
-                <p className="flex-1">{item.description}</p>
-                <p className="w-16 text-center">{item.hours}</p>
-                <p className="w-16 text-center">{item.rate}</p>
+                <p className="flex-1">{item.description || "Item Description"}</p>
+                <p className="w-16 text-center">{item.hours || 0}</p>
+                <p className="w-16 text-center">{item.rate || 0}</p>
                 <p className="w-20 text-right">
-                  {"₹ " + item.amount.toFixed(2)}
+                  {/* FIX: Wrapped in Number() */}
+                  {"₹ " + Number(item.amount || 0).toFixed(2)}
                 </p>
               </div>
             );
@@ -116,15 +134,17 @@ function ItemizedTable({ invoice }) {
           <div className="flex flex-col w-50">
             <div className="flex justify-between">
               <p>SUB TOTAL</p>
-              <p>{"₹ " + invoice.subTotal.toFixed(2)}</p>
+              {/* FIX: Wrapped in Number() */}
+              <p>{"₹ " + Number(invoiceData.subTotal || 0).toFixed(2)}</p>
             </div>
             <div className="flex justify-between">
               <p>DISCOUNT</p>
-              <p>{invoice.discountPercent + "%"}</p>
+              <p>{(invoiceData.discountPercent || 0) + "%"}</p>
             </div>
             <div className="flex justify-between">
               <p>PAID</p>
-              <p>{"₹ " + invoice.paidAmount.toFixed(2)}</p>
+              {/* FIX: Wrapped in Number() */}
+              <p>{"₹ " + Number(invoiceData.paidAmount || 0).toFixed(2)}</p>
             </div>
           </div>
         </div>
@@ -132,22 +152,14 @@ function ItemizedTable({ invoice }) {
         <div className="w-full border-t border-accent px-1 flex justify-end">
           <div className="flex justify-between w-50">
             <p>GRAND TOTAL</p>
-            <p>{"₹ " + invoice.totalAmount.toFixed(2)}</p>
+            {/* FIX: Wrapped in Number() */}
+            <p>{"₹ " + Number(invoiceData.totalAmount || 0).toFixed(2)}</p>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-// function PaymentInfo() {
-//   return (
-//     <div className="border border-accent text-[0.7rem] leading-none">
-//       <div className="border-b border-accent px-1 mb-2">PAYMENT DETAILS</div>
-//       <div className="px-1"></div>
-//     </div>
-//   );
-// }
 
 function InvFooter({ email }) {
   return (

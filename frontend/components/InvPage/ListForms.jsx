@@ -1,64 +1,94 @@
 "use client";
-import { useState } from "react";
 import { IoIosArrowDropdown } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-export default function ListForms() {
-  // Store an array of objects to keep track of individual lists and their unique IDs
-  const [lists, setLists] = useState([{ id: 1 }]);
-  // Keep track of the next ID to assign so we don't get duplicates when deleting/adding
-  const [nextId, setNextId] = useState(2);
-
+export default function ListForms({ invoiceData, setInvoiceData }) {
   function handleAddList() {
-    setLists([...lists, { id: nextId }]);
-    setNextId(nextId + 1);
+    setInvoiceData((prev) => ({
+      ...prev,
+      items: [
+        ...prev.items,
+        { description: "", hours: 0, rate: 0, amount: 0 },
+      ],
+    }));
   }
 
-  function handleDeleteList(idToRemove) {
-    // Filter out the list that matches the ID we want to delete
-    setLists(lists.filter((list) => list.id !== idToRemove));
+  function handleDeleteList(indexToRemove) {
+    setInvoiceData((prev) => ({
+      ...prev,
+      items: prev.items.filter((_, idx) => idx !== indexToRemove),
+    }));
+  }
+
+  function handleItemChange(index, field, value) {
+    setInvoiceData((prev) => {
+      const newItems = [...prev.items];
+      newItems[index] = { ...newItems[index], [field]: value };
+
+      // If user updates hours or rate, auto-calculate the amount
+      if (field === "hours" || field === "rate") {
+        const hours = parseFloat(newItems[index].hours) || 0;
+        const rate = parseFloat(newItems[index].rate) || 0;
+        
+        // Only override the amount if they are actually using hours/rate
+        if (hours > 0 || rate > 0) {
+          newItems[index].amount = hours * rate;
+        }
+      }
+
+      return { ...prev, items: newItems };
+    });
   }
 
   return (
     <div className="flex flex-col justify-between items-center h-full w-full border-l border-accent">
       <div className="flex flex-col gap-4 items-center h-full w-full p-4 overflow-y-auto">
-        {/* Map through the array to render a ListForm for every item in state */}
-        {lists.map((list) => (
+        {invoiceData?.items?.map((item, index) => (
           <ListForm
-            key={list.id}
-            ind={list.id}
-            onDelete={() => handleDeleteList(list.id)}
+            key={index}
+            ind={index + 1}
+            item={item}
+            onDelete={() => handleDeleteList(index)}
+            onChange={(field, value) => handleItemChange(index, field, value)}
           />
         ))}
       </div>
       <div className="h-[8vh] w-full border-t border-accent p-2 flex justify-end gap-4 items-center">
         <button
-          className="bg-accent h-full px-4 rounded-sm"
+          className="bg-accent text-background font-medium h-full px-4 rounded-sm"
           onClick={handleAddList}
         >
-          Add List
+          Add Item
         </button>
-        <button className="bg-green-500 h-full px-4 rounded-sm">Done</button>
+        <button className="bg-green-500 text-white font-medium h-full px-4 rounded-sm">
+          Done
+        </button>
       </div>
     </div>
   );
 }
 
-function ListForm({ ind, onDelete }) {
-  const labelArr = ["Description", "Hours", "Rate", "Amount"];
+function ListForm({ ind, item, onDelete, onChange }) {
+  // Removed the readOnly: true from the Amount field so you can type directly into it
+  const labelArr = [
+    { label: "Description", name: "description", type: "text" },
+    { label: "Hours", name: "hours", type: "number" },
+    { label: "Rate", name: "rate", type: "number" },
+    { label: "Amount", name: "amount", type: "number" }, 
+  ];
+
   return (
     <div className="w-full border-2 border-foreground rounded-sm">
       <div className="flex justify-between items-center bg-foreground font-light h-[4vh] w-full text-[1.2rem] px-2 cursor-pointer">
-        <p>{"List " + ind}</p>
+        <p>{"Item " + ind}</p>
         <div className="flex justify-between text-[1.4rem] gap-1">
-          {/* Wire up the delete button */}
           <button
             onClick={(e) => {
-              e.stopPropagation(); // Prevents clicking the row if you add an onClick to the row later
+              e.stopPropagation();
               onDelete();
             }}
           >
-            <RiDeleteBin6Line />
+            <RiDeleteBin6Line className="hover:text-red-500 transition-colors" />
           </button>
           <button>
             <IoIosArrowDropdown />
@@ -66,22 +96,32 @@ function ListForm({ ind, onDelete }) {
         </div>
       </div>
       <div className="flex flex-col items-center gap-1 h-full w-full text-foreground p-2">
-        {labelArr.map((title, ind) => {
-          return <ListInputComp title={title} key={ind} />;
+        {labelArr.map((field, index) => {
+          return (
+            <ListInputComp
+              key={index}
+              title={field.label}
+              type={field.type}
+              value={item[field.name]}
+              onChange={(e) => onChange(field.name, e.target.value)}
+            />
+          );
         })}
       </div>
     </div>
   );
 }
 
-function ListInputComp({ title }) {
+function ListInputComp({ title, type, value, onChange }) {
   return (
     <div className="flex gap-2 w-full text-[1rem]">
       <h1 className="w-38">{title + ":"}</h1>
 
       <input
-        className="w-full font-funnel-sans text-foreground text-[0.8rem] tracking-[-4%] appearance-none bg-transparent outline-none focus:ring-0 px-2 m-0 rounded-none border border-accent"
-        type="text"
+        className="w-full font-funnel-sans text-foreground text-[0.8rem] tracking-[-4%] appearance-none bg-transparent outline-none focus:ring-0 px-2 m-0 rounded-none border border-accent disabled:opacity-60"
+        type={type}
+        value={value}
+        onChange={onChange}
       />
     </div>
   );
